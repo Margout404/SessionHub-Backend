@@ -1,0 +1,4 @@
+ALTER TABLE training_session
+    MODIFY trainer_id BIGINT NULL,
+    MODIFY training_room_id BIGINT NULL,
+    MODIFY training_type_id BIGINT NULL;
