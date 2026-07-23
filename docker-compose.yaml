@@ -1,22 +1,39 @@
-version: '3.8'
-
 services:
-
-  mysql:
-    image: mysql:8.4
-    container_name: gym-mysql
-
+  postgres:
+    image: postgres:16
+    container_name: gym-app-postgres
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: gym_app
-
+      POSTGRES_DB: gym_app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "3310:3306"
-
+      - "5433:5432"
     volumes:
-      - mysql_data:/var/lib/mysql
-
-    restart: unless-stopped
+      - gym_app_postgres_data:/var/lib/postgresql/data
 
 volumes:
-  mysql_data:
+  gym_app_postgres_data:
+
+  #version: '3.8'
+  #
+  #services:
+  #
+  #  mysql:
+  #    image: mysql:8.4
+  #    container_name: gym-mysql
+  #
+  #    environment:
+  #      MYSQL_ROOT_PASSWORD: root
+  #      MYSQL_DATABASE: gym_app
+  #
+  #    ports:
+  #      - "3310:3306"
+  #
+  #    volumes:
+  #      - mysql_data:/var/lib/mysql
+  #
+  #    restart: unless-stopped
+  #
+  #volumes:
+  #  mysql_data:
+  #
