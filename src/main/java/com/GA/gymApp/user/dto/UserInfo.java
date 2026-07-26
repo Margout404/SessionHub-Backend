@@ -2,9 +2,12 @@ package com.GA.gymApp.user.dto;
 
 import com.GA.gymApp.user.Role;
 
-public record UserCreateDTO (
+public record UserInfo(
+        Long id,
         String firstName,
         String lastName,
         String email,
-        String password){
+        Role role
+) {
+
 }

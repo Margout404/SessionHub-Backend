@@ -69,5 +69,11 @@ public class UserService {
         return null;
     }
 
+    public UserInfo currentUser(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new Exceptions.AuthorizationException("No user with this email : "+ email));
+
+        return new UserInfo(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail(), user.getRole());
+    }
+
 
 }

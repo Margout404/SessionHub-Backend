@@ -31,7 +31,7 @@ public class UserMapper {
         user.setLastName(dto.lastName());
         user.setEmail( dto.email() );
         user.setPassword( dto.password() );
-        user.setRole( dto.role() );
+        user.setRole(Role.USER);
         user.setPassword(encodedPassword);
         user.setActive(true);
 
