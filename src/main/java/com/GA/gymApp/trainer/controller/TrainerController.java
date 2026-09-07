@@ -20,7 +20,8 @@ public class TrainerController {
     TrainerService service;
 
     @GetMapping("/all-trainers")
-    public ResponseEntity<List<TrainerResponseDTO>> getAllTrainers(){
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<TrainerResponseDTO>> getAllTrainers() {
         return ResponseEntity.ok(service.getAllTrainers());
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -58,4 +59,30 @@ public class TrainingSessionController {
         PublishSessionsResponseDTO responseDTO= service.publishSessions(ids);
         return ResponseEntity.ok(responseDTO);
     }
+
+    @GetMapping("/admin")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<TrainingSessionResponseDTO>>
+    getAdminSessions(
+            @RequestParam LocalDate from,
+            @RequestParam LocalDate to
+    ) {
+        return ResponseEntity.ok(
+                service.getAdminSessions(from, to)
+        );
+    }
+
+    @GetMapping("/published")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<List<TrainingSessionResponseDTO>>
+    getPublishedSessions(
+            @RequestParam LocalDate from,
+            @RequestParam LocalDate to
+    ) {
+        return ResponseEntity.ok(
+                service.getPublishedSessions(from, to)
+        );
+    }
+
+
 }

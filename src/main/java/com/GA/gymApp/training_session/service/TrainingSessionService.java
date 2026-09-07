@@ -7,11 +7,13 @@ import com.GA.gymApp.training_room.model.TrainingRoom;
 import com.GA.gymApp.training_room.repository.TrainingRoomRepository;
 import com.GA.gymApp.training_session.TrainingSessionStatus;
 import com.GA.gymApp.training_session.dto.*;
+import com.GA.gymApp.training_session.mappers.TrainingSessionMapper;
 import com.GA.gymApp.training_session.model.TrainingSession;
 import com.GA.gymApp.training_session.repository.TrainingSessionRepository;
 import com.GA.gymApp.training_type.model.TrainingType;
 import com.GA.gymApp.training_type.repository.TrainingTypeRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,6 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.stream.Collectors.toList;
+
 
 @Service
 public class TrainingSessionService {
@@ -29,13 +33,15 @@ public class TrainingSessionService {
     private final TrainingRoomRepository roomRepository;
     private final TrainingTypeRepository typeRepository;
     private final TrainerRepository trainerRepository;
+    private final TrainingSessionMapper mapper;
 
 
-    public TrainingSessionService(TrainingSessionRepository repository, TrainingRoomRepository roomRepository, TrainingTypeRepository typeRepository, TrainerRepository trainerRepository) {
+    public TrainingSessionService(TrainingSessionRepository repository, TrainingRoomRepository roomRepository, TrainingTypeRepository typeRepository, TrainerRepository trainerRepository, TrainingSessionMapper mapper) {
         this.repository = repository;
         this.roomRepository = roomRepository;
         this.typeRepository = typeRepository;
         this.trainerRepository = trainerRepository;
+        this.mapper = mapper;
     }
 
     @Transactional
@@ -46,15 +52,15 @@ public class TrainingSessionService {
         TrainingSession trainingSession = new TrainingSession();
         trainingSession.setTrainingRoom(roomRepository.findById(
                 dto.roomId()).orElseThrow(
-                        () -> new Exceptions.ResourceNotFoundException("No such Training Room")));
+                () -> new Exceptions.ResourceNotFoundException("No such Training Room")));
 
         trainingSession.setTrainer(trainerRepository.findById(
                 dto.trainerId()).orElseThrow(
-                        () -> new Exceptions.ResourceNotFoundException("No such Trainer")));
+                () -> new Exceptions.ResourceNotFoundException("No such Trainer")));
 
         trainingSession.setTrainingType(typeRepository.findById(
                 dto.trainingTypeId()).orElseThrow(
-                        () -> new Exceptions.ResourceNotFoundException("No such Training Type")));
+                () -> new Exceptions.ResourceNotFoundException("No such Training Type")));
 
         trainingSession.setDate(dto.date());
         trainingSession.setStartTime(dto.startTime());
@@ -226,25 +232,25 @@ public class TrainingSessionService {
     }
 
 
-    public PublishSessionsResponseDTO publishSessions(List<Long> sessionIds){
+    public PublishSessionsResponseDTO publishSessions(List<Long> sessionIds) {
 
         HashSet<Long> ids = new HashSet<>(sessionIds);
 
-        List<TrainingSession> sessions=repository.findAllById(ids);
+        List<TrainingSession> sessions = repository.findAllById(ids);
 
-        for (TrainingSession session : sessions){
+        for (TrainingSession session : sessions) {
 
-            if(session.getTrainingRoom()== null){
+            if (session.getTrainingRoom() == null) {
                 throw new Exceptions.BadRequestException(
                         "Session " + session.getId() + "has no Training Room"
                 );
             }
-            if(session.getTrainingType()== null){
+            if (session.getTrainingType() == null) {
                 throw new Exceptions.BadRequestException(
                         "Session " + session.getId() + "has no Training Type"
                 );
             }
-            if(session.getTrainer()== null){
+            if (session.getTrainer() == null) {
                 throw new Exceptions.BadRequestException(
                         "Session " + session.getId() + "has no Trainer"
                 );
@@ -259,8 +265,6 @@ public class TrainingSessionService {
                 ids,
                 "Sessions published successfully"
         );
-
-
 
 
     }
@@ -315,5 +319,30 @@ public class TrainingSessionService {
             throw new Exceptions.ConflictException("Trainer is occupied at this time");
         }
 
+    }
+
+    public List<TrainingSessionResponseDTO> getAdminSessions(
+            LocalDate from,
+            LocalDate to
+    ) {
+
+        return repository.findAllByDateBetweenOrderByDateAscStartTimeAsc(from, to)
+                .stream()
+                .map(mapper::toResponseDTO).toList();
+    }
+
+    public List<TrainingSessionResponseDTO> getPublishedSessions(
+            LocalDate from,
+            LocalDate to
+    ) {
+        return repository
+                .findAllByDateBetweenAndStatusOrderByDateAscStartTimeAsc(
+                        from,
+                        to,
+                        TrainingSessionStatus.SCHEDULED
+                )
+                .stream()
+                .map(mapper::toResponseDTO)
+                .toList();
     }
 }

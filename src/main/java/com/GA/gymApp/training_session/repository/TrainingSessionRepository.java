@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TrainingSessionRepository extends JpaRepository<TrainingSession,Long> {
+public interface TrainingSessionRepository extends JpaRepository<TrainingSession, Long> {
     boolean findByDate(LocalDate date);
 
     Optional<TrainingSession> findByStartTimeAndDate(LocalTime startTime, LocalDate date);
@@ -22,12 +22,28 @@ public interface TrainingSessionRepository extends JpaRepository<TrainingSession
             LocalTime newStartTime
     );
 
-//    This method searches dates without the params
+    //    This method searches dates without the params
     List<TrainingSession> findByDateAfterAndDateBeforeAndStatusEquals(LocalDate dateAfter, LocalDate dateBefore, TrainingSessionStatus status);
 
 
     List<TrainingSession> findByDateBetweenAndStatusOrderByDateAscStartTimeAsc(LocalDate dateAfter, LocalDate dateBefore, TrainingSessionStatus status);
 
+    List<TrainingSession> findAllByDateBetweenOrderByDateAscStartTimeAsc(
+            LocalDate from,
+            LocalDate to
+    );
+
+    List<TrainingSession> findAllByDateBetweenAndStatusOrderByDateAscStartTimeAsc(
+            LocalDate from,
+            LocalDate to,
+            TrainingSessionStatus status
+    );
+
+    List<TrainingSession> findAllByDateBetweenAndStatus(
+            LocalDate from,
+            LocalDate to,
+            TrainingSessionStatus status
+    );
 
 
 }
