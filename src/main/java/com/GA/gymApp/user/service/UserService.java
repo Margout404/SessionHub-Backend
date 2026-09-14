@@ -2,6 +2,8 @@ package com.GA.gymApp.user.service;
 
 import com.GA.gymApp.exceptions.Exceptions;
 import com.GA.gymApp.security.generic.JwtService;
+import com.GA.gymApp.training_session.model.TrainingSession;
+import com.GA.gymApp.training_session.repository.TrainingSessionRepository;
 import com.GA.gymApp.user.dto.*;
 import com.GA.gymApp.user.mapper.UserMapper;
 import com.GA.gymApp.user.model.User;
@@ -23,6 +25,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final TrainingSessionRepository sessionRepository;
 
 
     public UserResponse register(UserCreateDTO request){
@@ -64,8 +67,14 @@ public class UserService {
 
     }
 
-    public BookingResponseDto makeBooking(Long trainingSessionId){
-//        TODO
+    public BookingResponseDto enroll(Long trainingSessionId){
+
+        TrainingSession session= sessionRepository.findById(trainingSessionId).orElseThrow(
+                        ()-> new Exceptions.ResourceNotFoundException("Training session not found"));
+
+
+
+
         return null;
     }
 

@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.swing.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,6 +35,9 @@ public class TrainingSession {
 
     @Enumerated(EnumType.STRING)
     private TrainingSessionStatus status;
+
+    @Column(name = "current_enrollments")
+    private Integer currentEnrollments  = 0;
 
     @ManyToOne(optional= true)
     @JoinColumn(name = "trainer_id",nullable = true)

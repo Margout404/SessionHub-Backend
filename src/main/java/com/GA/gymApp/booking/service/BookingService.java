@@ -73,8 +73,10 @@ public class BookingService {
                 hasAvailableSlot(session)
                         ? BookingStatus.CONFIRMED
                         : BookingStatus.WAITING_LIST;
-
+//TODO waiting list
         Booking booking = createBooking(user, session, status);
+
+        session.setCurrentEnrollments(session.getCurrentEnrollments()+1);
 
 
         repository.save(booking);
@@ -95,6 +97,12 @@ public class BookingService {
         if (session.getStatus() != TrainingSessionStatus.SCHEDULED) {
             throw new Exceptions.BadRequestException(
                     "Enrollment is allowed only for scheduled sessions"
+            );
+        }
+
+        if(session.getCurrentEnrollments()>= session.getMaxParticipants()){
+            throw new Exceptions.BadRequestException(
+                    "Max participants reached for this session"
             );
         }
 
