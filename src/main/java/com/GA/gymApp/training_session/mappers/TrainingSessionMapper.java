@@ -31,7 +31,8 @@ public class TrainingSessionMapper {
                 session.getEndTime(),
 
                 session.getMaxParticipants(),
-                session.getStatus()
+                session.getStatus(),
+                session.getCurrentEnrollments()
         );
     }
 }

@@ -22,6 +22,7 @@ public record TrainingSessionResponseDTO(
         LocalTime endTime,
 
         Integer maxParticipants,
-        TrainingSessionStatus status
+        TrainingSessionStatus status,
+        Integer currentEnrollments
 ) {
 }

@@ -2,6 +2,7 @@ package com.GA.gymApp.booking.controller;
 
 import com.GA.gymApp.booking.dto.AvailableSessionsDTO;
 import com.GA.gymApp.booking.dto.EnrollResponseDTO;
+import com.GA.gymApp.booking.dto.MyBookingResponseDTO;
 import com.GA.gymApp.booking.service.BookingService;
 import com.GA.gymApp.security.generic.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
@@ -39,5 +40,17 @@ public class BookingController {
         EnrollResponseDTO dto= service.enroll(id,userDetails.getUser());
 
         return ResponseEntity.ok(dto);
+    }
+
+
+    @GetMapping("/my-bookings")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public ResponseEntity<List<MyBookingResponseDTO>> getMyBookings(
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        List<MyBookingResponseDTO> bookings =
+                service.getMyBookings(userDetails.getUser());
+
+        return ResponseEntity.ok(bookings);
     }
 }

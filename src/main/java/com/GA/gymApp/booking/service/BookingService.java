@@ -2,6 +2,7 @@ package com.GA.gymApp.booking.service;
 
 import com.GA.gymApp.booking.dto.AvailableSessionsDTO;
 import com.GA.gymApp.booking.dto.EnrollResponseDTO;
+import com.GA.gymApp.booking.dto.MyBookingResponseDTO;
 import com.GA.gymApp.booking.enums.BookingStatus;
 import com.GA.gymApp.booking.model.Booking;
 import com.GA.gymApp.booking.repository.BookingRepository;
@@ -151,5 +152,34 @@ public class BookingService {
                 );
 
         return confirmedBookings < session.getMaxParticipants();
+    }
+
+    public List<MyBookingResponseDTO> getMyBookings(User user){
+
+        List<Booking> bookings =
+                repository.findAllByUser_IdOrderByTrainingSession_DateAscTrainingSession_StartTimeAsc(
+                        user.getId()
+                );
+
+        return bookings.stream()
+                .map(booking -> {
+
+                    TrainingSession session = booking.getTrainingSession();
+
+                    return new MyBookingResponseDTO(
+                            booking.getId(),
+                            session.getId(),
+                            session.getTrainingType().getName(),
+                            session.getTrainer().getFirstName()
+                                    + " "
+                                    + session.getTrainer().getLastName(),
+                            session.getTrainingRoom().getName(),
+                            session.getDate(),
+                            session.getStartTime(),
+                            session.getEndTime(),
+                            booking.getStatus()
+                    );
+                })
+                .toList();
     }
 }
