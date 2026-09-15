@@ -16,7 +16,7 @@ public class CorsConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173","https://session-hub-frontend-zeta.vercel.app"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173","https://session-hub-frontend-zeta.vercel.app","https://sessionhub.space"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
