@@ -26,8 +26,9 @@ public class BookingController {
     @GetMapping("/available-sessions")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<List<AvailableSessionsDTO>> seeAvailableSessions(@RequestParam LocalDate from,
-                                                                           @RequestParam LocalDate until){
-        List<AvailableSessionsDTO> dto= service.seeAvailableSessions(from,until);
+                                                                           @RequestParam LocalDate until,
+                                                                           @AuthenticationPrincipal CustomUserDetails userDetails){
+        List<AvailableSessionsDTO> dto= service.seeAvailableSessions(from,until,userDetails.getUser());
 
         return ResponseEntity.ok(dto);
     }

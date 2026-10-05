@@ -4,6 +4,7 @@ import com.GA.gymApp.booking.dto.AvailableSessionsDTO;
 import com.GA.gymApp.booking.dto.EnrollResponseDTO;
 import com.GA.gymApp.booking.dto.MyBookingResponseDTO;
 import com.GA.gymApp.booking.enums.BookingStatus;
+import com.GA.gymApp.booking.enums.UserBooked;
 import com.GA.gymApp.booking.model.Booking;
 import com.GA.gymApp.booking.repository.BookingRepository;
 import com.GA.gymApp.exceptions.Exceptions;
@@ -30,7 +31,7 @@ public class BookingService {
         this.sessionRepository = sessionRepository;
     }
 
-    public List<AvailableSessionsDTO> seeAvailableSessions(LocalDate from, LocalDate until) {
+    public List<AvailableSessionsDTO> seeAvailableSessions(LocalDate from, LocalDate until, User user) {
 
         if (from.isAfter(until)) {
             throw new Exceptions.BadRequestException(
@@ -42,7 +43,21 @@ public class BookingService {
 
         List<AvailableSessionsDTO> availableSessionsDTOS = new ArrayList<>();
 
+
         for (TrainingSession session : sessions) {
+
+            boolean alreadyBooked =
+                    repository.existsByUser_IdAndTrainingSession_IdAndStatusNot(
+                            user.getId(),
+                            session.getId(),
+                            BookingStatus.CANCELLED
+                    );
+
+            UserBooked userBooked =
+                    alreadyBooked
+                            ? UserBooked.ENROLLED
+                            : UserBooked.NOT_ENROLLED;
+
             availableSessionsDTOS.add(new AvailableSessionsDTO(
                     session.getId(),
                     session.getTrainer().getFirstName(),
@@ -54,7 +69,8 @@ public class BookingService {
                     session.getEndTime(),
                     session.getMaxParticipants(),
                     repository.countByTrainingSession_IdAndStatus(session.getId(), BookingStatus.CONFIRMED),
-                    session.getStatus()
+                    session.getStatus(),
+                    userBooked
             ));
         }
         return availableSessionsDTOS;

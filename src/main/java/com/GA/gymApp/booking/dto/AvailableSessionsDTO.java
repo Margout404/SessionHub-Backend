@@ -1,5 +1,6 @@
 package com.GA.gymApp.booking.dto;
 
+import com.GA.gymApp.booking.enums.UserBooked;
 import com.GA.gymApp.training_session.TrainingSessionStatus;
 
 import java.time.LocalDate;
@@ -16,6 +17,7 @@ public record AvailableSessionsDTO(
         LocalTime endTime,
         Integer maxParticipants,
         Integer currentParticipants,
-        TrainingSessionStatus status
+        TrainingSessionStatus status,
+        UserBooked userBooked
 ) {
 }
